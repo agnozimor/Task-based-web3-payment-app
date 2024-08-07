@@ -17,29 +17,59 @@ model User {
   address        String  @unique
   tasks          Task[]
 }
+model Worker {   
+  id    Int             @id @default(autoincrement())
+  address String        @unique
+  submission  Submission[]
+  balance_id  Int
+  pending_amount Int
+  locked_amount  Int
+}
+//model Balance{
+//  id            Int     @id @default(autoincrement())
+//  amount        Int     @default(0)
+//  worker_id     Int
+//  worker        Worker  @relation(fields:[worker_id], references:[id])
+//}
 model Task {
   id             Int     @id @default(autoincrement())
-  title          String
-  Options        Options[]
-
+  title          String  @default("Complete the assigned task")
+  options        Options[]
+  user_id        Int
+  pay_signature  String
+  amount         String         
+  user           User    @relation(fields: [user_id], references:[id]) 
+  submission     Submission[]
+  
 }
 model Options {
   id             Int     @id @default(autoincrement())
-  image_address  String?
+  image_address  String
   option_id      Int
   task_id        Int
   task           Task    @relation(fields: [task_id], references: [id])
-}
-model Worker {   
-  id    Int     @id @default(autoincrement())
-  address String  @unique
+  submission     Submission[]
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+model Submission{
+  id          Int        @id @default(autoincrement())
+  worker_id   Int     
+  worker      Worker     @relation(fields: [worker_id], references: [id])
+  option_id   Int      
+  options     Options    @relation(fields:[option_id], references: [id])
+  task_id     Int
+  task        Task       @relation(fields:[task_id], references: [id])
+  amount      String
 }
+//model SubmissionCache{
+//  id          Int
+//  task_id     Int
+//  options1    Int
+//  options2    Int
+//  options3    Int
+//  options4    Int
+//  options5    Int
+//  options6    Int
+//  options7    Int
+//  options8    Int
+//}
